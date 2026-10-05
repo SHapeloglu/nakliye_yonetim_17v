@@ -1,43 +1,27 @@
-# session.md — nakliye_yonetim_17v Oturum Günlüğü
-
-Her çalışma oturumunda buraya kısa bir kayıt düşülür: ne yapıldı, hangi kararlar alındı, sıradaki adım ne. Amaç, bir sonraki oturuma (veya başka bir geliştiriciye/Claude örneğine) hızlıca bağlam aktarmak.
-
----
-
-## Şablon
-
-```markdown
-## YYYY-AA-GG
-
-**Yapılanlar:**
-- ...
-
-**Alınan kararlar / neden:**
-- ...
-
-**Açık sorunlar / bilinen eksikler:**
-- ...
-
-**Sıradaki adım:**
-- ...
-```
+# session.md — Nakliye Yönetim (Odoo 17) Oturum Günlüğü
 
 ---
 
 ## 2026-10-05
 
-**Yapılanlar:**
-- Eksik proje çalışma dosyaları oluşturuldu: `architect.md`, `backlog.md`, `CLAUDE.md`, `session.md`, `task.md`.
-- İçerik; README, dosya yapısı, bağımlılık dosyaları ve git geçmişinden çıkarıldı.
+- Şablondan üretilmiş çalışma dosyaları kod ve spec okunarak yeniden yazıldı.
+- Tespit: aktif geliştirme Odoo 18 reposunda (`SHapeloglu/nakliye_yonetim`, `/opt/odoo/custom_addons/nakliye_yonetim`); bu repo 06-25'ten beri durağan.
 
-**Açık sorunlar / bilinen eksikler:**
-- README yok — kurulum/çalıştırma adımları belgelenmeli.
-- Otomatik test bulunamadı — kritik akışlar için en azından duman (smoke) testleri eklenmeli.
+---
 
-**Sıradaki adım:**
-- `CLAUDE.md` ve `architect.md` içeriğini gözden geçirip proje sahibinin bilgisiyle tamamla.
+## Önceki Çalışmalar
 
-### Bu tarihten önceki son commit'ler (referans)
+- **2026-06-25** — Odoo 17 modülü ilk sürüm.
+- **2026-06-07** — İlk commit.
 
-- 2026-06-25 — Odoo 17 nakliye yonetim modulu ilk versiyon
-- 2026-06-07 — first commit
+---
+
+### Kayıt Şablonu
+
+```markdown
+## YYYY-AA-GG
+**Yapılanlar:** ...
+**Kararlar / neden:** ...
+**Açık sorunlar:** ...
+**Sıradaki adım:** ...
+```

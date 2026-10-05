@@ -1,43 +1,16 @@
-# CLAUDE.md
+# CLAUDE.md — Nakliye Yönetim (Odoo 17 sürümü)
 
-Bu dosya, bu proje üzerinde çalışırken Claude'un (Claude Code dahil) izlemesi gereken bağlamı ve kuralları içerir.
+Şantiye bazlı nakliye operasyonları için özel Odoo modülü: şantiye/saha tanımları, nakliyeci sözleşmeleri, günlük plan, döküm/kantar/yakıt fişleri, yemek planı ve puantajı, taşeron **hakediş** hesaplama + PDF, satır bazlı yetkilendirme (formen / şantiye muhasebecisi).
 
-## Proje
-
-**nakliye_yonetim_17v** — _README'de açıklama bulunamadı. Projenin amacını buraya bir-iki cümleyle yazın._
-
-- GitHub: https://github.com/SHapeloglu/nakliye_yonetim_17v
-
-## Teknoloji Yığını
-
-- Odoo 1 modülü (Python + XML view)
-
-## Önemli Dosyalar
-
-- `__manifest__.py`
-
-Mimari ayrıntılar için bkz. `architect.md`.
-
-## Sık Kullanılan Komutlar
-
-```bash
-odoo -c <odoo.conf> -u <modul_adi> -d <veritabani>   # modülü güncelle
-```
+- GitHub: https://github.com/SHapeloglu/nakliye_yonetim_17v — **Odoo 17 sürümü, 2026-06-25'ten beri güncellenmiyor**
+- **Aktif sürüm (Odoo 18):** ayrı public repo `SHapeloglu/nakliye_yonetim`, sunucuda `/opt/odoo/custom_addons/nakliye_yonetim` (prod/test Odoo 18 servisleri yüklüyor). Fark: `tree` → `list` görünümleri, menü `path` alanları, bazı alanların `required=True` olması ve 2026-07-20 güncellemeleri.
+- Ayrıntılı spesifikasyon: `nakliye_yonetim_spec.md` · Mimari: `architect.md` · Görevler: `task.md` · Fikirler: `backlog.md` · Günlük: `session.md`
 
 ## Kurallar
 
-- Model değişikliğinden sonra modül mutlaka `-u <modul>` ile güncellenmeli; yeni alanlar için view XML ve erişim kuralları (`security/ir.model.access.csv`) birlikte güncellenmeli.
-- `__manifest__.py` içindeki `data` listesine eklenmeyen XML dosyaları yüklenmez.
-- Odoo çekirdeğini değiştirme; davranışı `_inherit` ile genişlet.
-- `.env`, parola, token ve API anahtarlarını asla commit etme.
-- Her çalışma oturumunun sonunda `session.md`ye kısa kayıt düş; görev durumunu `task.md`de güncelle.
-- Önceliklendirilmemiş fikirleri `backlog.md`ye yaz; somutlaşınca `task.md`ye taşı.
-
-## Çalışma Dosyaları
-
-| Dosya | Amaç |
-|---|---|
-| `architect.md` | Mimari ve dizin yapısı referansı |
-| `task.md` | Aktif / devam eden / tamamlanan görevler |
-| `backlog.md` | Önceliklendirilmemiş fikir ve teknik borç havuzu |
-| `session.md` | Oturum günlüğü — her oturum sonunda güncellenir |
+- **Yeni geliştirme Odoo 18 reposunda yapılır.** Bu repoda değişiklik yalnızca Odoo 17 müşterisi için gerekiyorsa — önce kullanıcıya sor.
+- Model / alan / iş kuralı değişikliğinde `nakliye_yonetim_spec.md`'yi güncelle (tek doğruluk kaynağı).
+- Odoo 17 sözdizimi: liste görünümü `<tree>`, `attrs`/`states` yerine 17'de `invisible="..."` ifadeleri.
+- Yeni model = `security/ir.model.access.csv` satırları + gerekiyorsa `ir_rule.xml` kuralı (formen/muhasebeci izolasyonu).
+- `__pycache__/*.pyc` izleniyor (bu repoda `.gitignore` sonradan eklenmiş) — yeni pyc ekleme.
+- Oturum sonunda `session.md`'ye kayıt düş, `task.md`'yi güncelle.

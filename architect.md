@@ -1,93 +1,57 @@
-# architect.md — nakliye_yonetim_17v Mimari Referansı
+# architect.md — Nakliye Yönetim Mimarisi (Odoo 17)
 
-Bu dosya projenin yapısının hızlı-referans özetidir. Kod değiştikçe güncel tutun.
+> Odoo 18 sürümü için `SHapeloglu/nakliye_yonetim` reposuna bakın; model yapısı aynıdır.
 
-## Genel Bakış
+## Genel Yapı
 
-_README'de açıklama bulunamadı. Projenin amacını buraya bir-iki cümleyle yazın._
-
-## Teknoloji Yığını
-
-- Odoo 1 modülü (Python + XML view)
-
-## Dizin Yapısı
+Standart Odoo modülü (`application: True`), bağımlılıklar: `base, mail, account, hr, fleet, maintenance`. Ayrıntılı alan/kural listesi: **`nakliye_yonetim_spec.md`** (tek doğruluk kaynağı) ve `nakliye_yonetim_analiz.docx`.
 
 ```
-.gitignore
-__init__.py
-__manifest__.py
-data/
-models/
-  __init__.py
-  ayarlar.py
-  dokum_fisi.py
-  employee_santiye.py
-  equipment.py
-  gunluk_plan.py
-  hakedis.py
-  hr_employee.py
-  kantar_fisi.py
-  partner.py
-  saha.py
-  santiye.py
-  sozlesme.py
-  yakit_fisi.py
-  yemek_plan.py
-  yemek_puantaj.py
-nakliye_yonetim_analiz.docx
-nakliye_yonetim_spec.md
-report/
-  __init__.py
-  hakedis_report.xml
-security/
-  groups.xml
-  ir.model.access.csv
-  ir_rule.xml
-views/
-  ayarlar_views.xml
-  dokum_fisi_views.xml
-  equipment_views.xml
-  gunluk_plan_views.xml
-  hakedis_views.xml
-  hakedis_wizard_views.xml
-  hr_employee_views.xml
-  kantar_fisi_views.xml
-  partner_views.xml
-  …
+Tanımlamalar: Şantiye ─┬─ Saha (formen_ids)
+                       ├─ Sözleşme (nakliyeci × araç × şantiye, satırlar = fiyatlar)
+                       └─ Yemek Planı
+Cari (res.partner) ── araç-şoför (nakliye.arac.sofor), taşeron işçi (nakliye.taseron.isci)
+Çalışan (hr.employee) ── şantiye ataması (nakliye.employee.santiye)
+Operasyon: Günlük Plan (+satır) · Döküm Fişi · Kantar Fişi · Yakıt Fişi · Yemek Puantajı (+satır)
+Muhasebe:  Hakediş Wizard ──► Hakediş (+satır) ──► QWeb PDF (report/hakedis_report.xml)
+Zimmet:    maintenance.equipment extend
 ```
 
-## Modüller / Kaynak Dosyalar
+## Modeller
 
-- `__manifest__.py`
-- `models/ayarlar.py`
-- `models/dokum_fisi.py`
-- `models/employee_santiye.py`
-- `models/equipment.py`
-- `models/gunluk_plan.py`
-- `models/hakedis.py`
-- `models/hr_employee.py`
-- `models/kantar_fisi.py`
-- `models/partner.py`
-- `models/saha.py`
-- `models/santiye.py`
-- `models/sozlesme.py`
-- `models/yakit_fisi.py`
-- `models/yemek_plan.py`
-- `models/yemek_puantaj.py`
-- `wizard/hakedis_wizard.py`
+| Model | Dosya | Not |
+|---|---|---|
+| `nakliye.santiye` | `models/santiye.py` | `muhasebeci_ids` → satır bazlı erişim |
+| `nakliye.saha` | `models/saha.py` | `formen_ids` (şu an `res.users`) |
+| `res.partner` extend, `nakliye.arac.sofor`, `nakliye.taseron.isci` | `models/partner.py` | Nakliyeci / taşeron bilgileri |
+| `nakliye.sozlesme`, `nakliye.sozlesme.satir` | `models/sozlesme.py` | Araç+şantiye başına tek aktif sözleşme; fiyat değişince eskisi pasif |
+| `hr.employee` extend, `nakliye.employee.santiye` | `models/hr_employee.py`, `employee_santiye.py` | Çalışan başına tek aktif atama |
+| `nakliye.gunluk.plan`, `nakliye.plan.satir` | `models/gunluk_plan.py` | Günlük sefer planı |
+| `nakliye.dokum.fisi` | `models/dokum_fisi.py` | Döküm; km validasyonu |
+| `nakliye.kantar.fisi` | `models/kantar_fisi.py` | Tonaj; araç yük haddi aşımı → nakliyeci sorumlu |
+| `nakliye.yakit.fisi` | `models/yakit_fisi.py` | Yakıt |
+| `nakliye.yemek.plan`(+satır), `nakliye.yemek.puantaj`(+satır) | `models/yemek_*.py` | Şantiyede tek aktif yemek planı |
+| `nakliye.hakedis`, `nakliye.hakedis.satir` | `models/hakedis.py` | Durumlar: taslak → onaya gönder → onay → ödendi / iptal; tevkifat fiscal position ile |
+| `nakliye.hakedis.wizard` | `wizard/hakedis_wizard.py` | Dönem + nakliyeci için hakediş üretimi |
+| `nakliye.ayarlar` | `models/ayarlar.py` | Tevkifat oranı vb. |
+| `maintenance.equipment` extend | `models/equipment.py` | Zimmet |
 
-## Giriş Noktaları ve Yapılandırma
+## Güvenlik
 
-- `__manifest__.py`
+Gruplar (`security/groups.xml`): Formen → Yönetici Formen → Şantiye Muhasebecisi → Muhasebe Müdürü → Yönetim → Admin.
+Satır kuralları (`security/ir_rule.xml`): formen `saha_id.formen_ids` ile, şantiye muhasebecisi `santiye_id.muhasebeci_ids` ile sınırlı; muhasebe müdürü ve admin için kural yok.
 
-## Dağıtım / Çalışma Ortamı
+## Zamanlanmış Görevler (`data/cron.xml`)
 
-- GitHub: https://github.com/SHapeloglu/nakliye_yonetim_17v
+- Günlük: `nakliye.sozlesme.action_bitis_kontrol()` — sözleşme bitiş kontrolü.
+- Günlük: `nakliye.hakedis.action_hakedis_hatirlatma()` — onay bekleyen hakediş hatırlatması.
 
-## Diğer Dokümanlar
+## İş Kuralları (spec §6)
 
-- `nakliye_yonetim_spec.md`
+Şantiye izolasyonu · tek aktif sözleşme (araç+şantiye) · tek aktif yemek planı (şantiye) · tek aktif atama (çalışan) · tonaj aşımında nakliyeci sorumlu · tevkifat fiscal position ile · fiyat değişiminde eski sözleşme pasif, geçmiş hakediş korunur · negatif/0 km onayı engelli.
 
 ## Mimari Kararlar
 
-_Önemli tasarım kararlarını ve gerekçelerini buraya ekleyin (ör. "X yerine Y seçildi çünkü ...")._
+- **Spec önce**: `nakliye_yonetim_spec.md` kodla birlikte tutuluyor; model/alan/kural değişiklikleri önce orada.
+- **Satır bazlı izolasyon `ir.rule` ile**: formen ve şantiye muhasebecisi sadece kendi saha/şantiyesini görür.
+- **Sözleşme geçmişi korunur**: fiyat değişikliği yeni sözleşme açar, eski hakedişler eski fiyatla kalır.
