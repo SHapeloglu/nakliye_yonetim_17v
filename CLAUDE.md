@@ -1,5 +1,7 @@
 # CLAUDE.md — Nakliye Yönetim (Odoo 17 sürümü)
 
+> 🗄️ **ARŞİV (2026-10-07):** Odoo 17 sürümü artık geliştirilmiyor. Bu repodaki tek kod commit'i (`66bb557`) Odoo 18 reposunun geçmişinde aynen var; güncel modül: **[SHapeloglu/nakliye_yonetim](https://github.com/SHapeloglu/nakliye_yonetim)** (Odoo 18). Odoo 17 gerekirse oradaki 2026-07-20 düzeltmeleri (zorunlu alanlar, partner değişiklikleri) geri taşınmalı.
+
 Şantiye bazlı nakliye operasyonları için özel Odoo modülü: şantiye/saha tanımları, nakliyeci sözleşmeleri, günlük plan, döküm/kantar/yakıt fişleri, yemek planı ve puantajı, taşeron **hakediş** hesaplama + PDF, satır bazlı yetkilendirme (formen / şantiye muhasebecisi).
 
 - GitHub: https://github.com/SHapeloglu/nakliye_yonetim_17v — **Odoo 17 sürümü, 2026-06-25'ten beri güncellenmiyor**

@@ -1,5 +1,7 @@
 # task.md — Nakliye Yönetim (Odoo 17) Görevleri
 
+> 🗄️ 2026-10-07: repo arşivlendi (Odoo 17 desteği sürmüyor) — güncel görevler `nakliye_yonetim` (Odoo 18) reposunda.
+
 ## 🔜 Sıradaki
 
 - [ ] Repo stratejisi (kullanıcı kararı): Odoo 17 desteği sürecek mi? Sürmeyecekse bu repoyu arşivle ve README'ye Odoo 18 reposunu işaret et
